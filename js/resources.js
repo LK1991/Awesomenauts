@@ -4,9 +4,10 @@ game.resources = [
 	 * @example
 	 * {name: "example", type:"image", src: "data/img/example.png"},
 	 */
-	// inserting the tiles so it can show when i run the page 
+	// inserting the tiles/player so it can show when i run the page 
 	{name: "background-tiles", type:"image", src: "data/img/background-tiles.png"},
 	{name: "meta-tiles", type:"image", src: "data/img/meta-tiles.png"},
+	{name: "player", type:"image", src: "data/img/orcSpear.png"},
 
 	/* Atlases 
 	 * @example
@@ -20,6 +21,7 @@ game.resources = [
  	 */
  	// inserting the map so it can show when i run the page
  	{name: "level01", type: "tmx", src: "data/map/test.tmx"},
+
 	/* Background music. 
 	 * @example
 	 * {name: "example_bgm", type: "audio", src: "data/bgm/"},
