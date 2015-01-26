@@ -4,10 +4,11 @@ game.resources = [
 	 * @example
 	 * {name: "example", type:"image", src: "data/img/example.png"},
 	 */
-	// inserting the tiles/player so it can show when i run the page 
+	// inserting images so it can show when i run the page 
 	{name: "background-tiles", type:"image", src: "data/img/background-tiles.png"},
 	{name: "meta-tiles", type:"image", src: "data/img/meta-tiles.png"},
 	{name: "player", type:"image", src: "data/img/orcSpear.png"},
+	{name: "tower", type:"image", src: "data/img/tower_round.svg.png"},
 
 	/* Atlases 
 	 * @example
