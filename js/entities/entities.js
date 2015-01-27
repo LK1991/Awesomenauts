@@ -17,9 +17,10 @@ game.PlayerEntity = me.Entity.extend({
 		me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
 
-		// adding animation so it could walk and switching player from orcSpear.png
+		// adding new animtations
 		this.renderable.addAnimation("idle", [78]);
 		this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
+		this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
 
 		this.renderable.setCurrentAnimation("idle");
 	},
@@ -35,9 +36,29 @@ game.PlayerEntity = me.Entity.extend({
 		}else {
 			this.body.vel.x = 0;
 		}
+		if(me.input.isKeyPressed("left")) {
+			// adds to the position of my x by the velocity defined above in 
+			// setVelocity() and multiplying it by me.timer.tick.
+			// me.timer.tick makes the movement look smooth
+			this.body.vel.x -= this.body.accel.x * me.timer.tick;
+			// makes the player flip
+			this.flipX(false);
+		}
 
+		if(me.input.isKeyPressed("attack")) {
+			if(!this.renderable.isCurrentAnimation("attack")) {
+				console.log(!this.renderable.isCurrentAnimation("attack"));
+				// sets the current animation to attack and once that is over
+				// goes back to the idle animation 
+				this.renderable.setCurrentAnimation("attack",  "idle");
+				// makes it so that the next time we start this sequence we begin
+				// from the first animation, not wherever we left off when we
+				// switched to another animation 
+				this.renderable.setAnimationFrame();
+			}
+		}
 		// makes it walk when you're pressing the keys to move and makes it stop walking when you don't press the keys
-		if(this.body.vel.x !== 0){
+		else if(this.body.vel.x !== 0){
 			if(!this.renderable.isCurrentAnimation("walk")) {
 				this.renderable.setCurrentAnimation("walk");
 			}
@@ -45,7 +66,18 @@ game.PlayerEntity = me.Entity.extend({
 			this.renderable.setCurrentAnimation("idle");
 		}
 
-
+		if(me.input.isKeyPressed("attack")) {
+			if(!this.renderable.isCurrentAnimation("attack")) {
+				console.log(!this.renderable.isCurrentAnimation("attack"));
+				// sets the current animation to attack and once that is over
+				// goes back to the idle animation 
+				this.renderable.setCurrentAnimation("attack",  "idle");
+				// makes it so that the next time we start this sequence we begin
+				// from the first animation, not wherever we left off when we
+				// switched to another animation 
+				this.renderable.setAnimationFrame();
+			}
+		}
 
 		this.body.update(delta);
 
@@ -63,7 +95,7 @@ game.PlayerBaseEntity = me.Entity.extend({
 			spritewidth: "100",
 			spriteheight: "100",
 			getShape: function() {
-				return (new me.Rect(0, 0, 100, 100)).toPolygon();
+				return (new me.Rect(0, 0, 100, 70)).toPolygon();
 			}
 		}]);
 		this.broken = false;
@@ -104,7 +136,7 @@ game.EnemyBaseEntity = me.Entity.extend({
 			spritewidth: "100",
 			spriteheight: "100",
 			getShape: function() {
-				return 	(new me.Rect(0, 0, 100, 100)).toPolygon();
+				return 	(new me.Rect(0, 0, 100, 70)).toPolygon();
 			}
 		}]);
 		this.broken = false;
