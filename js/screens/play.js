@@ -16,6 +16,8 @@ game.PlayScreen = me.ScreenObject.extend({
 		me.input.bindKey(me.input.KEY.RIGHT, "right");
 		// moving player left by hitting the left key
 		me.input.bindKey(me.input.KEY.LEFT, "left");
+		// making the player jump by hitting the space key
+		me.input.bindKey(me.input.KEY.SPACE, "jump");
 		// making player attack by hitting the A key
 		me.input.bindKey(me.input.KEY.A, "attack");
 
