@@ -13,6 +13,8 @@ game.PlayerEntity = me.Entity.extend({
 		}]);
 
 		this.body.setVelocity(5, 20);
+		// Keeps track of which direction the character is going 
+		this.facing = "right";
 		// following the player and moving the screen 
 		me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
@@ -31,17 +33,21 @@ game.PlayerEntity = me.Entity.extend({
 			// setVelocity() and multiplying it by me.timer.tick.
 			// me.timer.tick makes the movement look smooth
 			this.body.vel.x += this.body.accel.x * me.timer.tick;
+			// Keeps track of which direction the character is going 
+			this.facing = "right";
 			// makes the player flip
 			this.flipX(true);
 		}else if(me.input.isKeyPressed("left")){
+			// Keeps track of which direction the character is going 
+			this.facing = "left";
 			this.body.vel.x -= this.body.accel.x * me.timer.tick;
 			this.flipX(false);
 		}else {
 			this.body.vel.x = 0;
 		}
 
-		if(me.input.isKeyPressed("jump") && !this.jumping && !this.falling) {
-			this.jumping = true;
+		if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling) {
+			this.body.jumping = true;
 			this.body.vel.y -= this.body.accel.y * me.timer.tick;
 		}
 
@@ -79,10 +85,31 @@ game.PlayerEntity = me.Entity.extend({
 			}
 		}
 
+		me.collision.check(this, true, this.collideHandler.bind(this), true);
 		this.body.update(delta);
 
 		this._super(me.Entity, "update", [delta]);
 		return true;
+	},
+
+	// doesn't let you collide with the EnemyBaseEntity
+	collideHandler: function(response) {
+		if(response.b.type==='EnemyBaseEntity') {
+			var ydif = this.pos.y - response.b.pos.y;
+			var xdif = this.pos.x - response.b.pos.x;
+
+			console.log("xdif " + xdif + " ydif " + ydif);
+
+			// this lets you move away from EnemyBaseEntity
+			if(xdif>-35 && this.facing==='right' && (xdif<0)) {
+				this.body.vel.x = 0;
+				this.pos.x = this.pos.x -1;
+			// this lets you move away from EnemyBaseEntity
+			}else if(xdif<70 && this.facing==='left' && xdif>0){
+				this.body.vel.x = 0;
+				this.pos.x = this.pos.x +1;
+			}
+		}
 	}
 });
 
