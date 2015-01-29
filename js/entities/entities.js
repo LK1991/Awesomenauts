@@ -15,6 +15,9 @@ game.PlayerEntity = me.Entity.extend({
 		this.body.setVelocity(5, 20);
 		// Keeps track of which direction the character is going 
 		this.facing = "right";
+		this.now = new Date().getTime();
+		this.lastHit = this.now; //	the last hit makes the tower lose health and fire up
+		this.lastAttack = new Date().getTime(); // Haven't used this
 		// following the player and moving the screen 
 		me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
@@ -28,6 +31,7 @@ game.PlayerEntity = me.Entity.extend({
 	},
 
 	update: function(delta){
+		this.now = new Date().getTime();
 		if(me.input.isKeyPressed("right")) {
 			// adds to the position of my x by the velocity defined above in 
 			// setVelocity() and multiplying it by me.timer.tick.
@@ -64,25 +68,12 @@ game.PlayerEntity = me.Entity.extend({
 			}
 		}
 		// makes it walk when you're pressing the keys to move and makes it stop walking when you don't press the keys
-		else if(this.body.vel.x !== 0){
+		else if(this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")){
 			if(!this.renderable.isCurrentAnimation("walk")) {
 				this.renderable.setCurrentAnimation("walk");
 			}
-		}else {
+		}else if(!this.renderable.isCurrentAnimation("attack")){
 			this.renderable.setCurrentAnimation("idle");
-		}
-
-		if(me.input.isKeyPressed("attack")) {
-			if(!this.renderable.isCurrentAnimation("attack")) {
-				console.log(!this.renderable.isCurrentAnimation("attack"));
-				// sets the current animation to attack and once that is over
-				// goes back to the idle animation 
-				this.renderable.setCurrentAnimation("attack",  "idle");
-				// makes it so that the next time we start this sequence we begin
-				// from the first animation, not wherever we left off when we
-				// switched to another animation 
-				this.renderable.setAnimationFrame();
-			}
 		}
 
 		me.collision.check(this, true, this.collideHandler.bind(this), true);
@@ -112,6 +103,12 @@ game.PlayerEntity = me.Entity.extend({
 			else if(xdif<70 && this.facing==='left' && xdif>0){
 				this.body.vel.x = 0;
 				this.pos.x = this.pos.x +1;
+			}
+
+			if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= 300) {
+				console.log("tower Hit"); // logs in when i hit the tower
+				this.lastHit = this.now; //	the last hit makes the tower lose health and fire up
+				response.b.loseHealth();
 			}
 		}
 	}
@@ -155,7 +152,7 @@ game.PlayerBaseEntity = me.Entity.extend({
 
 	onCollision: function() {
 
-	}
+	},
 });
 
 game.EnemyBaseEntity = me.Entity.extend({
@@ -196,6 +193,9 @@ game.EnemyBaseEntity = me.Entity.extend({
 
 	onCollision: function() {
 		
-	}
+	},
 
+	loseHealth: function() {
+		this.health--;
+	}
 });
