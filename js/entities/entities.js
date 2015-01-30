@@ -1,5 +1,6 @@
-// there are many players in the image so this is only choosing one
+// creating a player entity
 game.PlayerEntity = me.Entity.extend({
+	// choosing one player out of all the others
 	init: function(x, y, settings){
 		this._super(me.Entity, 'init', [x, y, {
 			image: "player", 
@@ -114,7 +115,9 @@ game.PlayerEntity = me.Entity.extend({
 	}
 });
 
+// creating the player base entity
 game.PlayerBaseEntity = me.Entity.extend({
+	// choosing one player base out of all the others
 	init : function(x, y, settings) {
 		this._super(me.Entity, 'init', [x, y, {
 			image: "tower",
@@ -155,7 +158,9 @@ game.PlayerBaseEntity = me.Entity.extend({
 	},
 });
 
+// creating the enemy base entity
 game.EnemyBaseEntity = me.Entity.extend({
+	// choosing one enemy base out of all the others
 	init : function(x, y, settings) {
 		this._super(me.Entity, 'init', [x, y, {
 			image: "tower",
@@ -197,5 +202,37 @@ game.EnemyBaseEntity = me.Entity.extend({
 
 	loseHealth: function() {
 		this.health--;
+	}
+});
+
+// creating the creep entity
+game.EnemyCreep = me.Entity.extend({
+	// choosing one creep out of all the other ones 
+	init: function(x, y, settings) {
+		this._super(me.Entity, 'init', [x, y {
+			image: "creep1",
+			width: 32,
+			height: 64,
+			spritewidth: "32",
+			spriteheight: "64",
+			getShape: function() {
+				return (new me.Rect(0, 0, 32, 64)).toPolygon();
+			}
+		}]);	
+		this.health = 10;
+		this.alwaysUpdate = true;
+
+		this.setVelocity(3, 20);
+
+		this.type = "EnemyCreep";
+
+		// making the creep allowed to talk
+		this.renderable.addAnimation("walk", [3, 4, 5], 80);
+		this.renderable.setCurrentAnimation("walk");
+
+	},
+
+	update: function() {
+
 	}
 });
