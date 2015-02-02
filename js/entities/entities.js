@@ -1,6 +1,6 @@
 // creating a player entity
 game.PlayerEntity = me.Entity.extend({
-	// choosing one player out of all the others
+	// choosing one playerBU out of all the others
 	init: function(x, y, settings){
 		this._super(me.Entity, 'init', [x, y, {
 			image: "player", 
@@ -118,7 +118,7 @@ game.PlayerEntity = me.Entity.extend({
 // creating the player base entity
 game.PlayerBaseEntity = me.Entity.extend({
 	// choosing one player base out of all the others
-	init : function(x, y, settings) {
+	init: function(x, y, settings) {
 		this._super(me.Entity, 'init', [x, y, {
 			image: "tower",
 			width: 100,
@@ -209,7 +209,7 @@ game.EnemyBaseEntity = me.Entity.extend({
 game.EnemyCreep = me.Entity.extend({
 	// choosing one creep out of all the other ones 
 	init: function(x, y, settings) {
-		this._super(me.Entity, 'init', [x, y {
+		this._super(me.Entity, 'init', [x, y, {
 			image: "creep1",
 			width: 32,
 			height: 64,
@@ -222,7 +222,7 @@ game.EnemyCreep = me.Entity.extend({
 		this.health = 10;
 		this.alwaysUpdate = true;
 
-		this.setVelocity(3, 20);
+		this.body.setVelocity(3, 20);
 
 		this.type = "EnemyCreep";
 
@@ -232,7 +232,38 @@ game.EnemyCreep = me.Entity.extend({
 
 	},
 
-	update: function() {
+	update: function(delta) {
+		// this adds more creeps
+		this.body.vel.x -= this.body.accel.x * me.timer.tick;
 
+		// and all of this makes them move
+		this.body.update(delta);
+
+		this._super(me.Entity, "update", [delta]);
+
+		return true;
 	}
+});
+
+// the timer for the creep
+game.GameManager = Object.extend({
+	init: function(x, y, settings) {
+		this.now = new Date().getTime();
+		this.lastCreep = new Date().getTime();
+
+		this.alwaysUpdate = true;
+	},
+
+	update: function() {
+		this.now = new Date().getTime();
+
+		if(Math.round(this.now/1000)%10 === 0 && (this.now - this.lastCreep >= 1000)) {
+			this.lastCreep = this.now;
+			var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
+			me.game.world.addChild(creepe, 5);
+		}
+
+		return true;
+
+	},
 });
