@@ -24,7 +24,7 @@ game.PlayerEntity = me.Entity.extend({
 		me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
 
 
-		// adding new animtations
+		// adding new animations
 		this.renderable.addAnimation("idle", [78]);
 		this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
 		this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
@@ -202,6 +202,8 @@ game.EnemyBaseEntity = me.Entity.extend({
 		this.body.update(delta);
 
 		this._super(me.Entity, "update", [delta]);
+
+
 		return true;
 	},	
 
@@ -244,7 +246,6 @@ game.EnemyCreep = me.Entity.extend({
 		// making the creep allowed to talk
 		this.renderable.addAnimation("walk", [3, 4, 5], 80);
 		this.renderable.setCurrentAnimation("walk");
-
 	},
 
 	update: function(delta) {
@@ -259,6 +260,13 @@ game.EnemyCreep = me.Entity.extend({
 		this.body.update(delta);
 
 		this._super(me.Entity, "update", [delta]);
+
+		// Making creep jump over obstacles intermediate 
+		if(me.input.isKeyPressed("jump1") && !this.jumping && !this.falling) {
+			this.body.jumping = true;
+			this.body.vel.y -= this.body.accel.y * me.timer.tick;
+		}
+
 
 		return true;
 	},
@@ -283,7 +291,6 @@ game.EnemyCreep = me.Entity.extend({
 
 				this.attacking = true;
 				// this.lastAttacking = this.now;
-				
 				
 				if(xdif>0){
 					// keeps moving the creep to the right to maintain it's position
