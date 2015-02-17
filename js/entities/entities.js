@@ -154,6 +154,80 @@ game.PlayerEntity = me.Entity.extend({
 		}
 });
 
+// i tried adding a creep on the player team, intermediate 
+/*game.PlayerCreep = me.Entity.extend({
+	init: function(x, y, settings){
+		this._super(me.Entity, 'init', [x, y, {
+			image: "player", 
+			width: 64,
+			height: 64,
+			spritewidth: "64",
+			spriteheight: "64",
+			getShape: function() {
+				return(new me.Rect(0, 0, 64, 64)).toPolygon();
+			}
+		}]);
+		this.type = "PlayerCreep";
+		this.health = game.data.playerCreepHealth;
+		this.facing = "right";
+		this.now = new Date().getTime();
+		this.lastHit = this.now;
+
+		this.renderable.addAnimation("idle", [78]);
+		this.renderable.addAnimation("walk", [117, 118, 119, 120, 121, 122, 123, 124, 125], 80);
+		this.renderable.addAnimation("attack", [65, 66, 67, 68, 69, 70, 71, 72], 80);
+
+		this.renderable.setCurrentAnimation("idle");
+
+		update: function(delta) {
+			this.now = new Date().getTime();
+
+			if (this.health >= 0) {
+				this.dead = true;
+				this.pos.x = 10;
+				this.pos.y = 0;
+				this.health = game.data.playerCreepHealth;
+			}
+
+			if(me.input.isKeyPressed("right")) {
+				// adds to the position of my x by the velocity defined above in 
+				// setVelocity() and multiplying it by me.timer.tick.
+				// me.timer.tick makes the movement look smooth
+				this.body.vel.x += this.body.accel.x * me.timer.tick;
+				// Keeps track of which direction the character is going 
+				this.facing = "right";
+				// makes the player flip
+				this.flipX(true);
+			}else {
+				this.body.vel.x = 0;
+			}
+
+			if(me.input.isKeyPressed("attack")) {
+				if(!this.renderable.isCurrentAnimation("attack")) {
+					console.log(!this.renderable.isCurrentAnimation("attack"));
+					// sets the current animation to attack and once that is over
+					// goes back to the idle animation 
+					this.renderable.setCurrentAnimation("attack",  "idle");
+					// makes it so that the next time we start this sequence we begin
+					// from the first animation, not wherever we left off when we
+					// switched to another animation 
+					this.renderable.setAnimationFrame();
+				}
+			}
+			// makes it walk when you're pressing the keys to move and makes it stop walking when you don't press the keys
+			else if(this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")){
+				if(!this.renderable.isCurrentAnimation("walk")) {
+					this.renderable.setCurrentAnimation("walk");
+				}
+			}else if(!this.renderable.isCurrentAnimation("attack")){
+				this.renderable.setCurrentAnimation("idle");
+			}
+
+			this._super(me.Entity, "update", [delta]);
+			return true;
+		}
+});*/
+
 // creating the player base entity
 game.PlayerBaseEntity = me.Entity.extend({
 	// choosing one player base out of all the others

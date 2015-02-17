@@ -11,6 +11,7 @@ var game = {
 		playerBaseHealth: 10, 
 		enemyCreepHealth: 10,
 		playerHealth: 10,
+		/* intermediate */ playerCreepHealth: 10,
 		enemyCreepAttack: 1,
 		playerAttack: 1,
 		/*orcBaseDamage: 10,
@@ -58,6 +59,7 @@ var game = {
 	"loaded" : function () {
 		// registering the player, playerbase, the enemybase, the enemycreep
 		me.pool.register("player", game.PlayerEntity, true);
+		// intermediate /*me.pool.register("PlayerCreep", game.PlayerCreep, true);*/
 		me.pool.register("PlayerBase", game.PlayerBaseEntity);
 		me.pool.register("EnemyBase", game.EnemyBaseEntity);
 		me.pool.register("EnemyCreep", game.EnemyCreep, true);
