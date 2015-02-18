@@ -436,7 +436,9 @@ game.GameManager = Object.extend({
 		this.now = new Date().getTime();
 
 		if(game.data.player.dead) {
+			// removes player getting attacked by the creep
 			me.game.world.removeChild(game.data.player);
+			// respawns the player
 			me.state.current().resetPlayer(10, 0);
 		}
 
