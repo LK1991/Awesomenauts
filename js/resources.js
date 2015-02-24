@@ -30,9 +30,13 @@ game.resources = [
 	 * @example
 	 * {name: "example_bgm", type: "audio", src: "data/bgm/"},
 	 */	
+	{name: "game over-fir", type: "audio", src: "data/bgm/"},
+	{name: "sidescroller-j", type: "audio", src: "data/bgm/"},
+	{name: "venom love-j", type: "audio", src: "data/bgm/"},
 
 	/* Sound effects. 
 	 * @example
 	 * {name: "example_sfx", type: "audio", src: "data/sfx/"}
 	 */
+	{name: "jumping_teon", type: "audio", src: "data/sfx/"},
 ];

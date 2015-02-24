@@ -19,14 +19,13 @@ game.PlayScreen = me.ScreenObject.extend({
 		me.input.bindKey(me.input.KEY.LEFT, "left");
 		// making the player jump by hitting the space key
 		me.input.bindKey(me.input.KEY.SPACE, "jump");
-		// making the creep jump by hitting the up key 
-		me.input.bindKey(me.input.KEY.UP, "jump1");
 		// making player attack by hitting the A key
 		me.input.bindKey(me.input.KEY.A, "attack");
 
 		// add our HUD to the game world
 		this.HUD = new game.HUD.Container();
 		me.game.world.addChild(this.HUD);
+		me.audio.playTrack("sidescroller-j");
 	},
 
 
