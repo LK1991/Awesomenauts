@@ -20,6 +20,7 @@ game.PlayerEntity = me.Entity.extend({
 		this.now = new Date().getTime();
 		this.lastHit = this.now; //	the last hit makes the tower lose health and fire up
 		this.dead = false;
+		this.attack = game.data.playerAttack;
 		this.lastAttack = new Date().getTime(); // Haven't used this
 		// following the player and moving the screen 
 		me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
@@ -61,11 +62,11 @@ game.PlayerEntity = me.Entity.extend({
 		if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling) {
 			this.body.jumping = true;
 			this.body.vel.y -= this.body.accel.y * me.timer.tick;
+			me.audio.play("jumping_teon");
 		}
 
 		if(me.input.isKeyPressed("attack")) {
 			if(!this.renderable.isCurrentAnimation("attack")) {
-				console.log(!this.renderable.isCurrentAnimation("attack"));
 				// sets the current animation to attack and once that is over
 				// goes back to the idle animation 
 				this.renderable.setCurrentAnimation("attack",  "idle");
@@ -87,13 +88,14 @@ game.PlayerEntity = me.Entity.extend({
 		me.collision.check(this, true, this.collideHandler.bind(this), true);
 		this.body.update(delta);
 
+		// console.log(" Dead x " + this.body.pos.x + " y " + this.body.pos.y);
+
 		this._super(me.Entity, "update", [delta]);
 		return true;
 	},
 
 	loseHealth: function(damage) {
 		this.health = this.health - damage;
-		console.log(this.health);
 	},
 
 	// doesn't let you collide with the EnemyBaseEntity
@@ -119,7 +121,6 @@ game.PlayerEntity = me.Entity.extend({
 			}
 
 			if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer) {
-				console.log("tower Hit"); // logs in when i hit the tower
 				this.lastHit = this.now; //	the last hit makes the tower lose health and fire up
 				response.b.loseHealth(game.data.playerAttack);
 			}
@@ -145,6 +146,13 @@ game.PlayerEntity = me.Entity.extend({
 					(((xdif>0) && this.facing==="left") || ((xdif<0) && this.facing==="right"))
 					){
 					this.lastHit = this.now;
+					// if the creeps health is less than our attack, execute code in if statement
+					if(response.b.health <= game.data.playerAttack) {
+						// adds one gold for a creep kill
+						game.data.gold += 1;
+						console.log("Current gold " + game.data.gold);
+					}
+
 					response.b.loseHealth(game.data.playerAttack);
 				}
 			}
@@ -357,8 +365,6 @@ game.EnemyCreep = me.Entity.extend({
 	},
 
 	update: function(delta) {
-		// logs in health
-		console.log(this.health);
 		if(this.health <= 0) {
 			me.game.world.removeChild(this);
 		}
@@ -374,13 +380,6 @@ game.EnemyCreep = me.Entity.extend({
 		this.body.update(delta);
 
 		this._super(me.Entity, "update", [delta]);
-
-		// Making creep jump over obstacles intermediate 
-		if(me.input.isKeyPressed("jump1") && !this.jumping && !this.falling) {
-			this.body.jumping = true;
-			this.body.vel.y -= this.body.accel.y * me.timer.tick;
-		}
-
 
 		return true;
 	},
@@ -412,7 +411,7 @@ game.EnemyCreep = me.Entity.extend({
 					this.body.vel.x = 0;
 				}
 				// checks that it has been at least 1 second since this creep hit something
-				if((this.now-this.lastHit >= 100) && xdif>0) {
+				if((this.now-this.lastHit >= 700) && xdif>0) {
 					// updates the lasthit timer
 					this.lastHit = this.now;
 					// makes the player call its loseHealth function and passes at a
@@ -428,7 +427,7 @@ game.GameManager = Object.extend({
 	init: function(x, y, settings) {
 		this.now = new Date().getTime();
 		this.lastCreep = new Date().getTime();
-
+		this.paused = false;
 		this.alwaysUpdate = true;
 	},
 
@@ -442,6 +441,13 @@ game.GameManager = Object.extend({
 			me.state.current().resetPlayer(10, 0);
 		}
 
+		// and another creep that respawns
+		if(Math.round(this.now/1000)%20 === 0 && (this.now - this.lastCreep >= 1000)) {
+			game.data.gold += 1;
+			console.log("Current gold: " + game.data.gold);
+		}
+
+		// a creep that respawns
 		if(Math.round(this.now/1000)%10 === 0 && (this.now - this.lastCreep >= 1000)) {
 			this.lastCreep = this.now;
 			var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
