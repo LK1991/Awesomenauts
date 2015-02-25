@@ -51,6 +51,7 @@ game.PlayerEntity = me.Entity.extend({
 		// Keeps track of which direction the character is going 
 		this.facing = "right";
 		this.dead = false;
+		this.attacking = false;
 	},
 
 	// separating the animations 
@@ -69,30 +70,10 @@ game.PlayerEntity = me.Entity.extend({
 
 		this.checkKeyPressesAndMove();
 
-		if(me.input.isKeyPressed("attack")) {
-			if(!this.renderable.isCurrentAnimation("attack")) {
-				// sets the current animation to attack and once that is over
-				// goes back to the idle animation 
-				this.renderable.setCurrentAnimation("attack",  "idle");
-				// makes it so that the next time we start this sequence we begin
-				// from the first animation, not wherever we left off when we
-				// switched to another animation 
-				this.renderable.setAnimationFrame();
-			}
-		}
-		// makes it walk when you're pressing the keys to move and makes it stop walking when you don't press the keys
-		else if(this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")){
-			if(!this.renderable.isCurrentAnimation("walk")) {
-				this.renderable.setCurrentAnimation("walk");
-			}
-		}else if(!this.renderable.isCurrentAnimation("attack")){
-			this.renderable.setCurrentAnimation("idle");
-		}
+		this.setAnimation();
 
 		me.collision.check(this, true, this.collideHandler.bind(this), true);
 		this.body.update(delta);
-
-		// console.log(" Dead x " + this.body.pos.x + " y " + this.body.pos.y);
 
 		this._super(me.Entity, "update", [delta]);
 		return true;
@@ -120,6 +101,8 @@ game.PlayerEntity = me.Entity.extend({
 			// linking the function
 			this.jump();
 		}
+
+		this.attacking = me.input.isKeyPressed("attack");
 	},
 
 	// refactoring movement to the right
@@ -147,6 +130,29 @@ game.PlayerEntity = me.Entity.extend({
 		this.body.jumping = true;
 		this.body.vel.y -= this.body.accel.y * me.timer.tick;
 		me.audio.play("jumping_teon");
+	},
+
+	// refactoring animations 
+	setAnimation: function() {
+		if(this.attacking) {
+			if(!this.renderable.isCurrentAnimation("attack")) {
+				// sets the current animation to attack and once that is over
+				// goes back to the idle animation 
+				this.renderable.setCurrentAnimation("attack",  "idle");
+				// makes it so that the next time we start this sequence we begin
+				// from the first animation, not wherever we left off when we
+				// switched to another animation 
+				this.renderable.setAnimationFrame();
+			}
+		}
+		// makes it walk when you're pressing the keys to move and makes it stop walking when you don't press the keys
+		else if(this.body.vel.x !== 0 && !this.renderable.isCurrentAnimation("attack")){
+			if(!this.renderable.isCurrentAnimation("walk")) {
+				this.renderable.setCurrentAnimation("walk");
+			}
+		}else if(!this.renderable.isCurrentAnimation("attack")){
+			this.renderable.setCurrentAnimation("idle");
+		}
 	},
 
 	loseHealth: function(damage) {
