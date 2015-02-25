@@ -64,33 +64,10 @@ game.PlayerEntity = me.Entity.extend({
 	update: function(delta){
 		this.now = new Date().getTime();
 
-		if (this.health <= 0) {
-			this.dead = true;
-		}
+		// linking functions
+		this.dead = checkIfDead();
 
-		if(me.input.isKeyPressed("right")) {
-			// adds to the position of my x by the velocity defined above in 
-			// setVelocity() and multiplying it by me.timer.tick.
-			// me.timer.tick makes the movement look smooth
-			this.body.vel.x += this.body.accel.x * me.timer.tick;
-			// Keeps track of which direction the character is going 
-			this.facing = "right";
-			// makes the player flip
-			this.flipX(true);
-		}else if(me.input.isKeyPressed("left")){
-			// Keeps track of which direction the character is going 
-			this.facing = "left";
-			this.body.vel.x -= this.body.accel.x * me.timer.tick;
-			this.flipX(false);
-		}else {
-			this.body.vel.x = 0;
-		}
-
-		if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling) {
-			this.body.jumping = true;
-			this.body.vel.y -= this.body.accel.y * me.timer.tick;
-			me.audio.play("jumping_teon");
-		}
+		this.checkKeyPressesAndMove();
 
 		if(me.input.isKeyPressed("attack")) {
 			if(!this.renderable.isCurrentAnimation("attack")) {
@@ -119,6 +96,57 @@ game.PlayerEntity = me.Entity.extend({
 
 		this._super(me.Entity, "update", [delta]);
 		return true;
+	},
+
+	// refactoring the death
+	checkIfDead: function() {
+		if (this.health <= 0) {
+			return true;
+		}
+		return false;
+	},
+
+	// refactoring pressed keys and movement
+	checkKeyPressesAndMove: function() {
+		if(me.input.isKeyPressed("right")) {
+			this.moveRight();
+		}else if(me.input.isKeyPressed("left")){
+			this.moveLeft();
+		}else {
+			this.body.vel.x = 0;
+		}
+
+		if(me.input.isKeyPressed("jump") && !this.body.jumping && !this.body.falling) {
+			// linking the function
+			this.jump();
+		}
+	},
+
+	// refactoring movement to the right
+	moveRight: function() {
+		// adds to the position of my x by the velocity defined above in 
+		// setVelocity() and multiplying it by me.timer.tick.
+		// me.timer.tick makes the movement look smooth
+		this.body.vel.x += this.body.accel.x * me.timer.tick;
+		// Keeps track of which direction the character is going 
+		this.facing = "right";
+		// makes the player flip
+		this.flipX(true);
+	},
+
+	// refactoring movement to the left
+	moveLeft: function() {
+		// Keeps track of which direction the character is going 
+		this.facing = "left";
+		this.body.vel.x -= this.body.accel.x * me.timer.tick;
+		this.flipX(false);
+	},
+
+	// refactoring jump
+	jump: function() {
+		this.body.jumping = true;
+		this.body.vel.y -= this.body.accel.y * me.timer.tick;
+		me.audio.play("jumping_teon");
 	},
 
 	loseHealth: function(damage) {
