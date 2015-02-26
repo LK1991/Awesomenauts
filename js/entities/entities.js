@@ -64,14 +64,10 @@ game.PlayerEntity = me.Entity.extend({
 
 	update: function(delta){
 		this.now = new Date().getTime();
-
 		// linking functions
 		this.dead = checkIfDead();
-
 		this.checkKeyPressesAndMove();
-
 		this.setAnimation();
-
 		me.collision.check(this, true, this.collideHandler.bind(this), true);
 		this.body.update(delta);
 
@@ -162,6 +158,16 @@ game.PlayerEntity = me.Entity.extend({
 	// doesn't let you collide with the EnemyBaseEntity
 	collideHandler: function(response) {
 		if(response.b.type==='EnemyBaseEntity') {
+			// linking to function
+			this.collideWithEnemyBase(response);
+		}else if(response.b.type==='EnemyCreep') {
+			// linking to function
+			this.collideWithEnemyCreep(response);
+		}
+	},
+
+	// refactor colliding with enemy base
+	collideWithEnemyBase: function(response) {
 			var ydif = this.pos.y - response.b.pos.y;
 			var xdif = this.pos.x - response.b.pos.x;
 
@@ -173,51 +179,70 @@ game.PlayerEntity = me.Entity.extend({
 			// this lets you move away from EnemyBaseEntity
 			else if(xdif>-35 && this.facing==='right' && (xdif<0)) {
 				this.body.vel.x = 0;
-				// this.pos.x = this.pos.x -1;
 			}
 			// this lets you move away from EnemyBaseEntity
 			else if(xdif<70 && this.facing==='left' && xdif>0){
 				this.body.vel.x = 0;
-				// this.pos.x = this.pos.x +1;
 			}
-
 			if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer) {
 				this.lastHit = this.now; //	the last hit makes the tower lose health and fire up
 				response.b.loseHealth(game.data.playerAttack);
 			}
-		}else if(response.b.type==='EnemyCreep') {
-				var xdif = this.pos.x - response.b.pos.x;
-				var ydif = this.pos.y - response.b.pos.y;
+	},
 
-				// lets creep get hit by any side
-				if(xdif>0) {
-					// this.pos.x = this.pos.x + 1;
-					if(this.facing==="left") {
-						this.body.vel.x = 0;
-					}
-				}else {
-					// this.pos.x = this.pos.x - 1;
-					if(this.facing==="right") {
-						this.body.vel.x = 0;
-					}
+	// refactor colliding with enemy creep
+	collideWithEnemyCreep: function(response) {
+		var xdif = this.pos.x - response.b.pos.x;
+		var ydif = this.pos.y - response.b.pos.y;
+		// linking to function
+		this.stopMovement(xdif);
+		// linking to function
+		if(this.checkAttack(xdif, ydif)) {
+			// linking to function
+			this.hitCreep(response);
+		};
+	},
+
+	// refactoring movement 
+	stopMovement: function(xdif) {
+			// lets creep get hit by any side
+			if(xdif>0) {
+				// this.pos.x = this.pos.x + 1;
+				if(this.facing==="left") {
+					this.body.vel.x = 0;
 				}
-				// if the player hits the creep 5, times it dies and disappear
-				if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer
-					&& (Math.abs(ydif) <=40) && 
-					(((xdif>0) && this.facing==="left") || ((xdif<0) && this.facing==="right"))
-					){
-					this.lastHit = this.now;
-					// if the creeps health is less than our attack, execute code in if statement
-					if(response.b.health <= game.data.playerAttack) {
-						// adds one gold for a creep kill
-						game.data.gold += 1;
-						console.log("Current gold " + game.data.gold);
-					}
-
-					response.b.loseHealth(game.data.playerAttack);
+			}else {
+				// this.pos.x = this.pos.x - 1;
+				if(this.facing==="right") {
+					this.body.vel.x = 0;
 				}
 			}
+	},
+
+	// refactoring attack
+	checkAttack: function(xdif, ydif) {
+			// if the player hits the creep 5, times it dies and disappear
+			if(this.renderable.isCurrentAnimation("attack") && this.now-this.lastHit >= game.data.playerAttackTimer
+				&& (Math.abs(ydif) <=40) && 
+				(((xdif>0) && this.facing==="left") || ((xdif<0) && this.facing==="right"))
+				){
+				this.lastHit = this.now;
+				// if the creeps health is less than our attack, execute code in if statement
+				return true;
+	}
+	return false;
+	},
+
+	// refactoring hitting the creep
+	hitCreep: function(response) {
+		if(response.b.health <= game.data.playerAttack) {
+			// adds one gold for a creep kill
+			game.data.gold += 1;
+			console.log("Current gold " + game.data.gold);
 		}
+
+		response.b.loseHealth(game.data.playerAttack);
+	}
 });
 
 // i tried adding a creep on the player team, intermediate 
