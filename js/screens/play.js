@@ -16,6 +16,9 @@ game.PlayScreen = me.ScreenObject.extend({
 		var heroDeathManager = me.pool.pull("HeroDeathManager", 0, 0, {});
 		me.game.world.addChild(heroDeathManager, 0);
 
+		var experienceManager = me.pool.pull("ExperienceManager", 0, 0, {})
+		me.game.world.addChild(ExperienceManager, 0);
+
 		// moving player right by hitting the right key
 		me.input.bindKey(me.input.KEY.RIGHT, "right");
 		// moving player left by hitting the left key
