@@ -3,7 +3,7 @@ game.PlayerEntity = me.Entity.extend({
 	// choosing one player out of all the others
 	init: function(x, y, settings){
 		// linking the functions
-		this.setSuper();
+		this.setSuper(x, y);
 		this.setPlayerTimers();
 		this.setAttributes();
 		this.type = "PlayerEntity";
@@ -19,7 +19,7 @@ game.PlayerEntity = me.Entity.extend({
 	},
 
 	// player settings separated from the the init function
-	setSuper: function() {
+	setSuper: function(x, y) {
 		this._super(me.Entity, 'init', [x, y, {
 			image: "player", 
 			width: 64,
@@ -65,7 +65,7 @@ game.PlayerEntity = me.Entity.extend({
 	update: function(delta){
 		this.now = new Date().getTime();
 		// linking functions
-		this.dead = checkIfDead();
+		this.dead = this.checkIfDead();
 		this.checkKeyPressesAndMove();
 		this.setAnimation();
 		me.collision.check(this, true, this.collideHandler.bind(this), true);
