@@ -7,8 +7,8 @@ var game = {
 		// score
 		score : 0,
 		// sets global variables so it can be used in other places
-		enemyBaseHealth: 10,
-		playerBaseHealth: 10, 
+		enemyBaseHealth: 1,
+		playerBaseHealth: 1, 
 		enemyCreepHealth: 10,
 		playerHealth: 10,
 		/* intermediate */ playerCreepHealth: 10,
@@ -51,7 +51,7 @@ var game = {
 	}
 
 	me.save.add({exp: 0, exp1: 0, exp2: 0, exp3: 0, exp4: 0});
-
+	
 	// Initialize the audio.
 	me.audio.init("mp3,ogg");
 
