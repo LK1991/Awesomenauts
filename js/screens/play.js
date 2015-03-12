@@ -19,6 +19,17 @@ game.PlayScreen = me.ScreenObject.extend({
 		var experienceManager = me.pool.pull("ExperienceManager", 0, 0, {})
 		me.game.world.addChild(experienceManager, 0);
 
+		var spendGold = me.pool.pull("SpendGold", 0, 0, {})
+		me.game.world.addChild(spendGold, 0);
+
+		// press B to buy
+		me.input.bindKey(me.input.KEY.B, "buy");
+		// press Q for skill1
+		me.input.bindKey(me.input.KEY.Q, "skill1");
+		// press W for skill2
+		me.input.bindKey(me.input.KEY.W, "skill2");	
+		// press E for skill3
+		me.input.bindKey(me.input.KEY.E, "skill3");
 		// moving player right by hitting the right key
 		me.input.bindKey(me.input.KEY.RIGHT, "right");
 		// moving player left by hitting the left key

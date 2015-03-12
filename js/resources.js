@@ -11,7 +11,8 @@ game.resources = [
 	{name: "tower", type:"image", src: "data/img/tower_round.svg.png"},
 	{name: "creep1", type:"image", src: "data/img/brainmonster.png"},
 	{name: "title-screen", type:"image", src: "data/img/title.png"},
-	{name: "exp-screen", type:"image", src: "data/img/loadpic.png"},
+	{name: "gold-screen", type:"image", src: "data/img/spend.png"},
+
 	// intermediate /*{name: "playercreep", type:"image", src: "data/img/gloop.png"},*/
 
 	/* Atlases 
