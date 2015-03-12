@@ -11,6 +11,7 @@ game.SpendExp = me.ScreenObject.extend({
 		me.input.bindKey(me.input.KEY.F3, "F3");
 		me.input.bindKey(me.input.KEY.F4, "F4");
 		me.input.bindKey(me.input.KEY.F5, "F5");
+		// sets the cost 
 		var exp1cost = ((game.data.exp1 + 1) * 10);
 
 		me.game.world.addChild(new (me.Renderable.extend({
@@ -34,7 +35,9 @@ game.SpendExp = me.ScreenObject.extend({
 		})));
 
 		this.handler = me.event.subscribe(me.event.KEYDOWN, function(action, keyCode, edge){
+			// if you press F1, you can buy exp
 			if(action === "F1") {
+				// if the exp is greater than 10, you can buy exp
 				if(game.data.exp >= exp1cost) {
 					game.data.exp1 += 1;
 					game.data.exp -= exp1cost;
