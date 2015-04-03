@@ -19,12 +19,3 @@
 		. "exp3 int(4),"
 		. "exp4 int(4),"
 		. "PRIMARY KEY (id))");
-
-	if($query) {
-		echo "<p>Successfully created table:users</p>";
-	}
-	else {
-		echo "<p>" . $_SESSION["connection"]->error . "</p>";
-	}
-	// A session is a way to store information in variables to be used across multiple pages.
-	// And this echos if it was created successfully.
