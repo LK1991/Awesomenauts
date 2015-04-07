@@ -13,7 +13,6 @@
 
 	// Inserting a post.
 	$query = $_SESSION["connection"]->query("INSERT INTO users SET "
-		. "email = '',"
 		. "username = '$username',"
 		. "password = '$hashedPassword',"
 		. "salt = '$salt', "
