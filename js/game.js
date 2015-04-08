@@ -6,6 +6,8 @@ var game = {
 	data : {
 		// score
 		score : 0,
+		option1: "",
+		option2: "",
 		// sets global variables so it can be used in other places
 		enemyBaseHealth: 1,
 		playerBaseHealth: 1, 
